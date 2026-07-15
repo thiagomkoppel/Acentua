@@ -1,5 +1,11 @@
 # Implementation Plan
 
+## Current status
+
+The project now has the initial extension scaffold, pure correction engine, input/textarea support, basic contenteditable support, popup/options controls, expanded local dictionaries, dictionary validation tooling, and explicit ambiguous-word suggestions. Remaining release work should focus on compatibility hardening, undo verification across more websites, release packaging, and Chrome Web Store preparation.
+
+No AI, server, account, analytics, or cloud sync work has been added.
+
 ## Phase 0: Project setup
 
 ### Tasks

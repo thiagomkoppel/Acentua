@@ -35,13 +35,17 @@ Example:
 }
 ```
 
-The MVP must not automatically replace these words.
+The MVP must not automatically replace these words. They may be offered as explicit, user-confirmed local suggestions.
 
 ### `ignored-words.json`
 
 Contains packaged words or token patterns that should never be corrected.
 
 User-specific ignored words belong in `chrome.storage`.
+
+## Current packaged dictionaries
+
+This version ships with 326 sorted safe entries and an expanded ambiguous dictionary. The dictionary is still intentionally conservative: additions must remain high-confidence, local, and test-backed.
 
 ## Entry rules
 
@@ -106,7 +110,13 @@ Dictionary keys must remain alphabetically sorted.
 
 ## Validation script
 
-Create a script that checks:
+Run dictionary validation before committing dictionary changes:
+
+```bash
+npm run validate:dictionaries
+```
+
+The script checks:
 
 - Valid JSON.
 - Lowercase keys.
@@ -116,6 +126,8 @@ Create a script that checks:
 - Identical key and value.
 - Conflicts between safe and ambiguous dictionaries.
 - Unicode normalization.
+- Unsafe object keys such as `__proto__`, `constructor`, and `prototype`.
+- Ambiguous entries that do not include the plain key.
 - Alphabetical order.
 
 ## User custom corrections
@@ -144,9 +156,9 @@ For each new entry:
 6. Run the full test suite.
 7. Keep the change focused.
 
-## Initial safe dictionary
+## Starter safe dictionary example
 
-A small initial list is preferable:
+The project started from a small verified list like this before expanding:
 
 ```json
 {

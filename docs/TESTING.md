@@ -25,6 +25,7 @@ Test:
 - Safe word correction.
 - Unknown words.
 - Ambiguous words.
+- Ambiguous suggestion options.
 - Ignored words.
 - Custom dictionary priority.
 - Empty input.
@@ -70,6 +71,10 @@ Test:
 - User custom entries.
 - Storage defaults.
 - Storage migrations.
+
+### Dictionary validation tooling
+
+Test validator behavior for sorted keys, duplicate keys, unsafe object keys, Unicode normalization, safe/ambiguous conflicts, ambiguous option shape, and ignored-word lists.
 
 ## 2. DOM integration tests
 
@@ -134,6 +139,10 @@ Add `tambem` to ignored words and verify it remains unchanged.
 ### Custom correction
 
 Add a custom pair and verify it is used.
+
+### Ambiguous suggestions
+
+Verify suggestion display, light-chip styling, placement, click accept, keyboard accept, setting disable, keyboard dismiss, dismiss-button behavior, and Escape pass-through.
 
 ### Basic contenteditable
 

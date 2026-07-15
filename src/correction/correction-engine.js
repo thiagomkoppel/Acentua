@@ -21,9 +21,23 @@ function dictionaryCorrection(original, dictionaries, key) {
 }
 
 function defaultCorrection(original, dictionaries, key) {
-  if (lookup(dictionaries.ambiguousDictionary, key))
-    return noChange(original, "ambiguous-word");
+  const ambiguous = lookup(dictionaries.ambiguousDictionary, key);
+  if (ambiguous) return ambiguousWord(original, key, ambiguous);
   return safeCorrection(original, dictionaries.safeDictionary, key);
+}
+
+function ambiguousWord(original, key, options) {
+  return {
+    ...noChange(original, "ambiguous-word"),
+    suggestions: suggestionOptions(original, key, options),
+  };
+}
+
+function suggestionOptions(original, key, options) {
+  if (!Array.isArray(options)) return [];
+  return options
+    .filter((word) => normalizeLookupWord(word) !== key)
+    .map((word) => applyCapitalization(original, word));
 }
 
 function safeCorrection(original, dictionary, key) {

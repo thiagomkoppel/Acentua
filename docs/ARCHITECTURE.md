@@ -51,6 +51,7 @@ Responsibilities:
 - Select the appropriate editor adapter.
 - Request correction for the completed word.
 - Apply a valid correction.
+- Show local suggestions for ambiguous words when enabled.
 - Record minimal last-correction metadata.
 
 The content script must not contain dictionary rules or editor-specific implementation details.
@@ -64,8 +65,13 @@ The controller coordinates:
 - Editor adapter selection.
 - Correction-engine calls.
 - Application of replacement.
+- Ambiguous-suggestion handoff when no automatic correction is safe.
 - Event dispatch.
 - Last-correction state.
+
+### Ambiguous suggestion manager
+
+`src/content/ambiguous-suggestions.js` owns the local suggestion popover state. It renders a lightweight chip, accepts the first suggestion by click or `Ctrl+.` / `Cmd+.`, dismisses by button or `Ctrl+,` / `Cmd+,`, and lets `Escape` pass through to the page.
 
 ## 4. Editor adapters
 
@@ -166,7 +172,7 @@ Priority order:
 
 1. Ignored words.
 2. User custom dictionary.
-3. Ambiguous dictionary.
+3. Ambiguous dictionary no-change result with local suggestion metadata.
 4. Default safe dictionary.
 5. No change.
 
@@ -174,7 +180,7 @@ An ignored word must always remain unchanged.
 
 A custom correction may override the default dictionary.
 
-An ambiguous word must remain unchanged unless the user explicitly creates a custom correction.
+An ambiguous word must remain unchanged unless the user explicitly creates a custom correction. When suggestions are enabled, the engine returns local suggestion options but does not mutate text automatically.
 
 ## 7. Dictionary loader
 
@@ -236,7 +242,8 @@ Suggested settings shape:
   customCorrections: {},
   ignoredWords: [],
   showCorrectionIndicator: true,
-  preserveCapitalization: true
+  preserveCapitalization: true,
+  showAmbiguousSuggestions: true
 }
 ```
 

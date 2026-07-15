@@ -12,6 +12,7 @@ The MVP must:
 
 - Run entirely in the browser.
 - Use packaged dictionaries.
+- Offer ambiguous suggestions only from local dictionary data.
 - Store settings with `chrome.storage`.
 - Avoid external network requests.
 - Avoid analytics.
@@ -41,6 +42,10 @@ Not allowed:
 - Browsing history.
 - Keystroke logs.
 - Authentication tokens.
+
+## Ambiguous suggestion UI
+
+The ambiguous-suggestion popover must use only the completed word, local dictionary options, and the active editor context needed to replace that word. It must not store surrounding sentences or transmit suggestion choices.
 
 ## Sensitive field exclusions
 

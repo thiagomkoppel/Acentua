@@ -1,8 +1,25 @@
 {
+  "analise": ["analise", "análise"],
+  "calculo": ["calculo", "cálculo"],
+  "critica": ["critica", "crítica"],
+  "critico": ["critico", "crítico"],
+  "debito": ["debito", "débito"],
+  "diagnostico": ["diagnostico", "diagnóstico"],
   "esta": ["esta", "está"],
+  "inicio": ["inicio", "início"],
+  "medica": ["medica", "médica"],
+  "medico": ["medico", "médico"],
+  "negocio": ["negocio", "negócio"],
+  "numero": ["numero", "número"],
+  "pais": ["pais", "país"],
   "pode": ["pode", "pôde"],
   "por": ["por", "pôr"],
+  "pratica": ["pratica", "prática"],
+  "pratico": ["pratico", "prático"],
   "publico": ["publico", "público", "publicou"],
   "sabia": ["sabia", "sabiá"],
-  "secretaria": ["secretaria", "secretária"]
+  "secretaria": ["secretaria", "secretária"],
+  "termino": ["termino", "término"],
+  "trafego": ["trafego", "tráfego"],
+  "transito": ["transito", "trânsito"]
 }

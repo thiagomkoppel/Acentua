@@ -3,17 +3,17 @@ import { describe, expect, it } from "vitest";
 import { correctWord } from "../../src/correction/correction-engine.js";
 
 const dictionaries = {
-  ambiguousDictionary: { esta: ["esta", "está"] },
+  ambiguousDictionary: { esta: ["esta", "est\u00e1"] },
   customDictionary: {},
   ignoredWords: [],
-  safeDictionary: { tambem: "também", voce: "você" },
+  safeDictionary: { tambem: "tamb\u00e9m", voce: "voc\u00ea" },
 };
 
 describe("correctWord", () => {
   it("corrects a safe dictionary word", () => {
     expect(correctWord("tambem", dictionaries)).toMatchObject({
       changed: true,
-      corrected: "também",
+      corrected: "tamb\u00e9m",
       reason: "safe-dictionary",
     });
   });
@@ -25,15 +25,22 @@ describe("correctWord", () => {
     });
   });
 
-  it("leaves ambiguous words unchanged", () => {
+  it("leaves ambiguous words unchanged with suggestions", () => {
     expect(correctWord("esta", dictionaries)).toMatchObject({
       changed: false,
       reason: "ambiguous-word",
+      suggestions: ["est\u00e1"],
     });
   });
 
+  it("preserves capitalization in ambiguous suggestions", () => {
+    expect(correctWord("ESTA", dictionaries).suggestions).toEqual([
+      "EST\u00c1",
+    ]);
+  });
+
   it("preserves capitalization through the engine", () => {
-    expect(correctWord("VOCE", dictionaries).corrected).toBe("VOCÊ");
+    expect(correctWord("VOCE", dictionaries).corrected).toBe("VOC\u00ca");
   });
 
   it("normalizes unicode before lookup", () => {
@@ -43,7 +50,7 @@ describe("correctWord", () => {
   it("honors ignored words before custom entries", () => {
     const result = correctWord("tambem", {
       ...dictionaries,
-      customDictionary: { tambem: "também" },
+      customDictionary: { tambem: "tamb\u00e9m" },
       ignoredWords: ["tambem"],
     });
 
@@ -53,7 +60,7 @@ describe("correctWord", () => {
   it("lets custom entries override ambiguous words", () => {
     const result = correctWord("esta", {
       ...dictionaries,
-      customDictionary: { esta: "está" },
+      customDictionary: { esta: "est\u00e1" },
     });
 
     expect(result).toMatchObject({

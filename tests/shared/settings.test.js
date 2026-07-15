@@ -10,6 +10,16 @@ describe("settings", () => {
     expect(mergeSettings({}).enabled).toBe(true);
   });
 
+  it("defaults ambiguous suggestions to enabled", () => {
+    expect(mergeSettings({}).showAmbiguousSuggestions).toBe(true);
+  });
+
+  it("respects ambiguous suggestion disable", () => {
+    expect(mergeSettings({ showAmbiguousSuggestions: false })).toMatchObject({
+      showAmbiguousSuggestions: false,
+    });
+  });
+
   it("respects global disable", () => {
     expect(isEnabledForDomain({ enabled: false }, "example.com")).toBe(false);
   });

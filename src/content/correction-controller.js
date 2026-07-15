@@ -8,17 +8,29 @@ const ADAPTERS = [inputAdapter, contenteditableAdapter];
 
 export function createCorrectionHandler(options) {
   const getHostname = options.getHostname ?? currentHostname;
-  return (event) => handleInput(event, options.getState, getHostname);
+  return (event) => handleInput(event, options, getHostname);
 }
 
-export async function handleInput(event, getState, getHostname) {
+export async function handleInput(event, options, getHostname) {
   const context = readContext(event);
-  if (!context) return;
-  const state = await getState();
-  if (!isEnabledForDomain(state.settings, getHostname())) return;
+  if (!context) return dismissSuggestions(options);
+  const state = await options.getState();
+  if (!canHandle(state, getHostname)) return dismissSuggestions(options);
+  handleContext(context, state, options);
+}
+
+function handleContext(context, state, options) {
   const token = getCompletedToken(context.text, context.selection.start);
-  if (!token) return;
-  applyCorrection(context, token, state);
+  if (!token) return dismissSuggestions(options);
+  applyCorrection(context, token, state, options.suggestions);
+}
+
+function canHandle(state, getHostname) {
+  return isEnabledForDomain(state.settings, getHostname());
+}
+
+function dismissSuggestions(options) {
+  options.suggestions?.dismiss();
 }
 
 function readContext(event) {
@@ -42,13 +54,35 @@ function contextFor(element, adapter, selection) {
   };
 }
 
-function applyCorrection(context, token, state) {
+function applyCorrection(context, token, state, suggestions) {
   const result = correctWord(token.word, dictionariesFor(state));
-  if (!result.changed) return;
-  replaceCorrection(context, token, result.corrected);
+  if (result.changed)
+    return replaceCorrection(context, token, result, suggestions);
+  showSuggestion(context, token, result, state.settings, suggestions);
 }
 
-function replaceCorrection(context, token, corrected) {
+function replaceCorrection(context, token, result, suggestions) {
+  suggestions?.dismiss();
+  replaceText(context, token, result.corrected);
+}
+
+function showSuggestion(context, token, result, settings, suggestions) {
+  if (!canSuggest(result, settings)) return suggestions?.dismiss();
+  suggestions?.show({ context, options: result.suggestions, token });
+}
+
+function canSuggest(result, settings = {}) {
+  return result.reason === "ambiguous-word" && canShow(settings, result);
+}
+
+function canShow(settings, result) {
+  return (
+    settings.showAmbiguousSuggestions !== false &&
+    result.suggestions?.length > 0
+  );
+}
+
+function replaceText(context, token, corrected) {
   const cursor = nextCursor(context.selection, token, corrected);
   context.adapter.replaceRange(
     context.element,

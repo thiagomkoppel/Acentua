@@ -7,6 +7,12 @@ const shortFunctions = {
   skipComments: true,
 };
 
+const sourceRules = {
+  complexity: ["error", 5],
+  "max-lines-per-function": ["error", shortFunctions],
+  "no-console": ["warn", { allow: ["warn", "error"] }],
+};
+
 export default [
   {
     ignores: [
@@ -19,7 +25,7 @@ export default [
   },
   js.configs.recommended,
   {
-    files: ["src/**/*.js", "scripts/**/*.js"],
+    files: ["src/**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
       globals: {
@@ -28,11 +34,16 @@ export default [
       },
       sourceType: "module",
     },
-    rules: {
-      complexity: ["error", 5],
-      "max-lines-per-function": ["error", shortFunctions],
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+    rules: sourceRules,
+  },
+  {
+    files: ["scripts/**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      globals: globals.node,
+      sourceType: "module",
     },
+    rules: sourceRules,
   },
   {
     files: ["tests/**/*.js"],

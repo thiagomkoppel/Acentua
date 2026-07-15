@@ -50,6 +50,10 @@ As a user, I want to add a correction that is missing from the default dictionar
 
 As a user, I want to prevent a particular word from being changed.
 
+### Ambiguous suggestions
+
+As a user, I want ambiguous words to stay unchanged unless I explicitly accept a suggested accent.
+
 ### Privacy
 
 As a user, I want my emails and private messages to remain on my device.
@@ -123,7 +127,7 @@ Settings and dictionaries must use `chrome.storage`.
 
 ### FR-12: Ambiguous words
 
-Ambiguous words must not be automatically corrected by the MVP.
+Ambiguous words must not be automatically corrected by the MVP. The extension may offer a local, explicit suggestion that the user can accept or dismiss.
 
 ## Non-functional requirements
 
@@ -185,3 +189,4 @@ The MVP is accepted when all of these scenarios pass:
 8. Password fields remain untouched.
 9. Disabled websites remain untouched.
 10. The extension works without internet access.
+11. Ambiguous suggestions can be accepted or dismissed without changing text automatically.

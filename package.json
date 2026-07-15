@@ -8,9 +8,10 @@
     "build": "node scripts/build.js",
     "format": "prettier --check .",
     "lint": "eslint .",
-    "test": "npm run test:unit && npm run test:browser",
+    "test": "npm run validate:dictionaries && npm run test:unit && npm run test:browser",
     "test:browser": "playwright test",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run",
+    "validate:dictionaries": "node scripts/validate-dictionaries.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

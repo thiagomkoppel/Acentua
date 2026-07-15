@@ -17,6 +17,8 @@ async function init() {
 
 function render(settings) {
   field("#enabled").checked = settings.enabled;
+  field("#show-ambiguous-suggestions").checked =
+    settings.showAmbiguousSuggestions;
   field("#disabled-domains").value = settings.disabledDomains.join("\n");
   field("#ignored-words").value = settings.ignoredWords.join("\n");
   field("#custom-corrections").value = correctionsText(
@@ -42,6 +44,7 @@ function readForm() {
     disabledDomains: lines(field("#disabled-domains").value),
     enabled: field("#enabled").checked,
     ignoredWords: lines(field("#ignored-words").value),
+    showAmbiguousSuggestions: field("#show-ambiguous-suggestions").checked,
   };
 }
 

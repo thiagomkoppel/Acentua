@@ -18,8 +18,9 @@ Implemented in this scaffold:
 
 - Manifest V3 Chrome extension.
 - Pure correction engine with structured results.
-- Small sorted Brazilian Portuguese safe dictionary.
-- Separate ambiguous dictionary that blocks automatic replacement.
+- Expanded sorted Brazilian Portuguese safe dictionary with 326 entries.
+- Separate ambiguous dictionary that blocks automatic replacement and offers local suggestions.
+- Dictionary validation tooling for sorted entries, conflicts, normalization, and unsafe keys.
 - Standard `input[type=text]`, `input[type=search]`, and `textarea` adapter.
 - Basic `contenteditable` adapter for simple rich text fields.
 - Correction after word-ending delimiters, including Space and punctuation.
@@ -27,7 +28,7 @@ Implemented in this scaffold:
 - Cursor preservation after replacement.
 - Sensitive-field and code-context exclusions.
 - Global enable setting, disabled domains, ignored words, and custom corrections in `chrome.storage`.
-- Minimal popup and options page.
+- Minimal popup and options page, including an ambiguous-suggestion toggle.
 - Extension icons generated from `src/assets/logo.png`.
 - Unit tests plus Chromium browser integration tests.
 
@@ -36,7 +37,7 @@ Out of scope for this first slice:
 - AI or server-side correction.
 - Gmail, Google Docs, or site-specific adapters.
 - Full grammar correction.
-- Large dictionary expansion.
+- Corpus-scale dictionary expansion.
 - Cloud sync or accounts.
 
 ## Project Structure
@@ -44,10 +45,14 @@ Out of scope for this first slice:
 ```text
 manifest.json
 package.json
+scripts/
+  dictionary-validator.js
+  validate-dictionaries.js
 src/
   assets/logo.png
   assets/icons/
   background/service-worker.js
+  content/ambiguous-suggestions.js
   content/content-script.js
   content/contenteditable-adapter.js
   content/correction-controller.js
@@ -66,6 +71,7 @@ tests/
   browser/basic-inputs.spec.js
   content/input-adapter.test.js
   correction/*.test.js
+  scripts/dictionary-validator.test.js
   shared/settings.test.js
 ```
 
@@ -83,6 +89,12 @@ Install dependencies:
 npm install
 ```
 
+Validate dictionaries:
+
+```bash
+npm run validate:dictionaries
+```
+
 Run unit tests:
 
 ```bash
@@ -95,7 +107,7 @@ Run the browser integration tests:
 npm run test:browser
 ```
 
-Run the full verification suite:
+Run the full verification suite, including dictionary validation:
 
 ```bash
 npm test
@@ -130,6 +142,15 @@ After rebuilding, click **Reload** on the extension in `chrome://extensions` and
 
 For quick development, you can also load the project root directly because `manifest.json` is at the root. Use `dist/` for cleaner release-style testing.
 
+## Ambiguous Suggestions
+
+Ambiguous words such as `esta` are not corrected automatically. When suggestions are enabled, Acentua shows a small local popover near the active field. The popover is local-only, non-modal, and does not send typed text anywhere.
+
+- Click the suggestion to accept it.
+- Press `Ctrl+.` or `Cmd+.` to accept it from the keyboard.
+- Press `Ctrl+,` or `Cmd+,` to dismiss it from the keyboard.
+- Click the small dismiss button to close it with the mouse.
+
 ## Options
 
 The options page supports:
@@ -137,6 +158,7 @@ The options page supports:
 - Global enable or disable.
 - Disabled domains, one per line, such as `example.com`.
 - Ignored words, one per line.
+- Ambiguous word suggestions on or off.
 - Custom corrections, one per line, using `plain=accented` format.
 
 Example custom correction:

@@ -4,17 +4,12 @@ export const DEFAULT_SETTINGS = Object.freeze({
   enabled: true,
   ignoredWords: [],
   locale: "pt-BR",
+  showAmbiguousSuggestions: true,
 });
 
 export function mergeSettings(value = {}) {
   const source = isPlainObject(value) ? value : {};
-  return {
-    customCorrections: cleanDictionary(source.customCorrections),
-    disabledDomains: cleanDomains(source.disabledDomains),
-    enabled: source.enabled !== false,
-    ignoredWords: cleanWordList(source.ignoredWords),
-    locale: "pt-BR",
-  };
+  return { ...dictionarySettings(source), ...featureSettings(source) };
 }
 
 export async function readSettings(storage = defaultStorage()) {
@@ -45,6 +40,22 @@ export function cleanDictionary(value) {
 export function cleanWordList(value) {
   if (!Array.isArray(value)) return [];
   return value.map(cleanWord).filter(Boolean);
+}
+
+function dictionarySettings(source) {
+  return {
+    customCorrections: cleanDictionary(source.customCorrections),
+    disabledDomains: cleanDomains(source.disabledDomains),
+    ignoredWords: cleanWordList(source.ignoredWords),
+  };
+}
+
+function featureSettings(source) {
+  return {
+    enabled: source.enabled !== false,
+    locale: "pt-BR",
+    showAmbiguousSuggestions: source.showAmbiguousSuggestions !== false,
+  };
 }
 
 function cleanDomains(value) {
