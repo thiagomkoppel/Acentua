@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Acentua Options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Acentua Options</h1>
+      <form id="settings-form">
+        <label class="check-row">
+          <input id="enabled" type="checkbox" />
+          Enable corrections
+        </label>
+        <label>
+          Disabled domains
+          <textarea
+            id="disabled-domains"
+            rows="4"
+            spellcheck="false"
+          ></textarea>
+        </label>
+        <label>
+          Ignored words
+          <textarea id="ignored-words" rows="4" spellcheck="false"></textarea>
+        </label>
+        <label>
+          Custom corrections
+          <textarea
+            id="custom-corrections"
+            rows="6"
+            spellcheck="false"
+          ></textarea>
+        </label>
+        <div class="actions">
+          <button type="submit">Save</button>
+          <button id="reset" type="button">Reset</button>
+        </div>
+        <p id="status" role="status"></p>
+      </form>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
