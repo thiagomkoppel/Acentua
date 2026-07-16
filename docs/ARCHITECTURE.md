@@ -39,7 +39,7 @@ Editor adapter applies replacement
 - Options page.
 - Icons.
 - Storage permission.
-- Required host access.
+- HTTP/HTTPS content-script matches for normal websites.
 
 ## 2. Content script
 

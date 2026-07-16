@@ -7,7 +7,7 @@ describe("manifest", () => {
   it("runs the content script in all frames", () => {
     expect(manifest.content_scripts[0]).toMatchObject({
       all_frames: true,
-      matches: ["<all_urls>"],
+      matches: ["http://*/*", "https://*/*"],
     });
   });
 });

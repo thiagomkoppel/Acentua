@@ -80,7 +80,7 @@ Heuristics must fail safely. When uncertain, do not correct.
 
 Review every requested permission.
 
-The likely MVP permission is:
+The MVP API permission is:
 
 ```json
 {
@@ -88,9 +88,9 @@ The likely MVP permission is:
 }
 ```
 
-Content scripts may require broad host matching to work across websites. Before publication, evaluate optional host permissions or user-triggered access.
+Acentua does not declare broad `host_permissions`. It does use broad `content_scripts.matches` for `http://*/*` and `https://*/*` so correction can run automatically in editable fields on normal websites. `activeTab` is not enough for this default typing workflow because it only grants temporary access after an explicit user gesture.
 
-Document why each permission is necessary in the Chrome Web Store listing.
+Document why storage and broad content-script matching are necessary in the Chrome Web Store listing.
 
 ## Content security
 
