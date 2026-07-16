@@ -52,10 +52,20 @@ function hasExcludedAncestor(element) {
 }
 
 function activeRange(root) {
-  const selection = root?.ownerDocument.getSelection();
+  const selection = selectionFor(root);
   if (!selection?.rangeCount) return null;
   const range = selection.getRangeAt(0);
   return containsRange(root, range) ? range : null;
+}
+
+function selectionFor(node) {
+  const root = node.getRootNode();
+  return rootSelection(root) ?? node.ownerDocument.getSelection();
+}
+
+function rootSelection(root) {
+  if (typeof root.getSelection !== "function") return null;
+  return root.getSelection();
 }
 
 function containsRange(root, range) {
@@ -117,7 +127,7 @@ function createTextWalker(root) {
 }
 
 function selectRange(range) {
-  const selection = range.startContainer.ownerDocument.getSelection();
+  const selection = selectionFor(range.startContainer);
   selection.removeAllRanges();
   selection.addRange(range);
 }
@@ -128,7 +138,7 @@ function insertText(root, text) {
 }
 
 function fallbackInsertText(root, text) {
-  const range = root.ownerDocument.getSelection().getRangeAt(0);
+  const range = selectionFor(root).getRangeAt(0);
   range.deleteContents();
   range.insertNode(root.ownerDocument.createTextNode(text));
   root.dispatchEvent(createInputEvent(text));

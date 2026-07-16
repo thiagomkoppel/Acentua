@@ -1,3 +1,5 @@
+import { DEFAULT_SHORTCUT_KEYS } from "../shared/settings.js";
+
 const DISMISS_ATTR = "data-acentua-dismiss";
 const SUGGESTION_ATTR = "data-acentua-suggestion";
 
@@ -38,8 +40,8 @@ function dismiss(popover) {
 
 function handleKeydown(event, state) {
   if (!state.pending) return state;
-  if (isAcceptKey(event)) return acceptFromKey(event, state);
-  if (isDismissKey(event)) return dismissFromKey(event, state);
+  if (isAcceptKey(event, state.pending)) return acceptFromKey(event, state);
+  if (isDismissKey(event, state.pending)) return dismissFromKey(event, state);
   return state;
 }
 
@@ -249,12 +251,20 @@ function dismissFromKey(event, state) {
   return dismiss(state.popover);
 }
 
-function isAcceptKey(event) {
-  return hasCommandModifier(event) && event.key === ".";
+function isAcceptKey(event, suggestion) {
+  return matchesShortcut(event, shortcutKey(suggestion, "acceptSuggestion"));
 }
 
-function isDismissKey(event) {
-  return hasCommandModifier(event) && event.key === ",";
+function isDismissKey(event, suggestion) {
+  return matchesShortcut(event, shortcutKey(suggestion, "dismissSuggestion"));
+}
+
+function matchesShortcut(event, key) {
+  return hasCommandModifier(event) && event.key === key;
+}
+
+function shortcutKey(suggestion, name) {
+  return suggestion.shortcutKeys?.[name] ?? DEFAULT_SHORTCUT_KEYS[name];
 }
 
 function hasCommandModifier(event) {

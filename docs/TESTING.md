@@ -142,7 +142,7 @@ Add a custom pair and verify it is used.
 
 ### Ambiguous suggestions
 
-Verify suggestion display, light-chip styling, placement, click accept, keyboard accept, setting disable, keyboard dismiss, dismiss-button behavior, and Escape pass-through.
+Verify suggestion display, light-chip styling, placement, click accept, default and custom keyboard accept, setting disable, default and custom keyboard dismiss, dismiss-button behavior, and Escape pass-through.
 
 ### Basic contenteditable
 

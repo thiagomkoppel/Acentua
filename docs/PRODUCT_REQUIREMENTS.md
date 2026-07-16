@@ -127,7 +127,7 @@ Settings and dictionaries must use `chrome.storage`.
 
 ### FR-12: Ambiguous words
 
-Ambiguous words must not be automatically corrected by the MVP. The extension may offer a local, explicit suggestion that the user can accept or dismiss.
+Ambiguous words must not be automatically corrected by the MVP. The extension may offer a local, explicit suggestion that the user can accept or dismiss by mouse or configured keyboard shortcut.
 
 ## Non-functional requirements
 

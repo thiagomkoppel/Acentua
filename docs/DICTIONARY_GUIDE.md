@@ -108,6 +108,50 @@ Do not implement automatic stemming until there is a clear need and strong test 
 
 Dictionary keys must remain alphabetically sorted.
 
+## Automatic safe expansion
+
+Use the guarded expander when you have a trusted accented word list or Portuguese text corpus:
+
+```bash
+npm run expand:safe -- --source path/to/pt-br-words.txt
+```
+
+The default command is a dry run. It reports candidate count, additions, skipped reasons, and a preview. To apply accepted additions:
+
+```bash
+npm run expand:safe -- --source path/to/pt-br-words.txt --write
+```
+
+The safe expander only adds entries when one unaccented key maps to exactly one accented candidate and the key is not already safe, ambiguous, ignored, or unsafe. It still cannot prove grammatical safety, so review the diff and run the full test suite before release.
+
+Use the ambiguous expander when you want to add only ambiguous entries from a trusted source:
+
+```bash
+npm run expand:ambiguous -- --source path/to/pt-br-words.txt
+```
+
+The default command is also a dry run. To apply accepted additions:
+
+```bash
+npm run expand:ambiguous -- --source path/to/pt-br-words.txt --write
+```
+
+The ambiguous expander adds entries when the source shows either a plain word plus an accented variant, such as `esta` and `está`, or multiple accented variants that collapse to the same plain key, such as `avó` and `avô`. It skips keys already in the safe dictionary and reports them as safe conflicts for manual review.
+
+If you already have a curated JSON dictionary shaped like `{ "esta": ["esta", "está"] }`, use the importer instead:
+
+```bash
+npm run import:ambiguous -- --source path/to/acentua_pt_br_ambiguas.json
+```
+
+By default, safe conflicts are skipped. To treat the imported list as authoritative and move conflicting keys out of `pt-BR-safe.json`:
+
+```bash
+npm run import:ambiguous -- --source path/to/acentua_pt_br_ambiguas.json --move-safe-conflicts --write
+```
+
+Use `--min-length 3` if you want to skip short frequent words such as `a`, `e`, `de`, and `do`.
+
 ## Validation script
 
 Run dictionary validation before committing dictionary changes:

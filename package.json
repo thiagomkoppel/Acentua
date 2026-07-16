@@ -11,7 +11,10 @@
     "test": "npm run validate:dictionaries && npm run test:unit && npm run test:browser",
     "test:browser": "playwright test",
     "test:unit": "vitest run",
-    "validate:dictionaries": "node scripts/validate-dictionaries.js"
+    "validate:dictionaries": "node scripts/validate-dictionaries.js",
+    "expand:safe": "node scripts/expand-safe-dictionary.js",
+    "expand:ambiguous": "node scripts/expand-ambiguous-dictionary.js",
+    "import:ambiguous": "node scripts/import-ambiguous-dictionary.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

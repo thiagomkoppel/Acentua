@@ -1,14 +1,23 @@
 import { correctWord } from "../correction/correction-engine.js";
-import { getCompletedToken } from "../correction/tokenizer.js";
+import {
+  getCompletedToken,
+  getTokenBeforeCursor,
+} from "../correction/tokenizer.js";
 import { isEnabledForDomain } from "../shared/settings.js";
 import { contenteditableAdapter } from "./contenteditable-adapter.js";
 import { inputAdapter } from "./input-adapter.js";
 
 const ADAPTERS = [inputAdapter, contenteditableAdapter];
+const COMPLETION_KEYS = new Set(["Tab"]);
 
 export function createCorrectionHandler(options) {
   const getHostname = options.getHostname ?? currentHostname;
   return (event) => handleInput(event, options, getHostname);
+}
+
+export function createCorrectionKeydownHandler(options) {
+  const getHostname = options.getHostname ?? currentHostname;
+  return (event) => handleCompletionKeydown(event, options, getHostname);
 }
 
 export async function handleInput(event, options, getHostname) {
@@ -19,8 +28,38 @@ export async function handleInput(event, options, getHostname) {
   handleContext(context, state, options);
 }
 
+export function handleCompletionKeydown(event, options, getHostname) {
+  if (!isCompletionKey(event)) return;
+  const request = keydownRequest(event, options);
+  if (!canUseRequest(request, getHostname)) return dismissSuggestions(options);
+  handlePendingContext(request.context, request.state, options, event.key);
+}
+
+function keydownRequest(event, options) {
+  return {
+    context: readContext(event),
+    state: options.getCurrentState?.(),
+  };
+}
+
+function canUseRequest(request, getHostname) {
+  return (
+    request.context && request.state && canHandle(request.state, getHostname)
+  );
+}
+
 function handleContext(context, state, options) {
   const token = getCompletedToken(context.text, context.selection.start);
+  if (!token) return dismissSuggestions(options);
+  applyCorrection(context, token, state, options.suggestions);
+}
+
+function handlePendingContext(context, state, options, delimiter) {
+  const token = getTokenBeforeCursor(
+    context.text,
+    context.selection.start,
+    delimiter,
+  );
   if (!token) return dismissSuggestions(options);
   applyCorrection(context, token, state, options.suggestions);
 }
@@ -34,11 +73,29 @@ function dismissSuggestions(options) {
 }
 
 function readContext(event) {
-  const adapter = adapterFor(event.target);
-  if (!adapter) return null;
-  const selection = adapter.getSelection(event.target);
+  const target = editableTarget(event);
+  if (!target) return null;
+  const selection = target.adapter.getSelection(target.element);
   if (!isCollapsed(selection)) return null;
-  return contextFor(event.target, adapter, selection);
+  return contextFor(target.element, target.adapter, selection);
+}
+
+function editableTarget(event) {
+  return targetCandidates(event).map(editableFor).find(Boolean) ?? null;
+}
+
+function editableFor(element) {
+  const adapter = adapterFor(element);
+  return adapter ? { adapter, element } : null;
+}
+
+function targetCandidates(event) {
+  const path = event.composedPath?.() ?? [event.target];
+  return path.filter(isElement);
+}
+
+function isElement(value) {
+  return value instanceof Element;
 }
 
 function adapterFor(element) {
@@ -68,7 +125,12 @@ function replaceCorrection(context, token, result, suggestions) {
 
 function showSuggestion(context, token, result, settings, suggestions) {
   if (!canSuggest(result, settings)) return suggestions?.dismiss();
-  suggestions?.show({ context, options: result.suggestions, token });
+  suggestions?.show({
+    context,
+    options: result.suggestions,
+    shortcutKeys: settings.shortcutKeys,
+    token,
+  });
 }
 
 function canSuggest(result, settings = {}) {
@@ -100,6 +162,14 @@ function dictionariesFor(state) {
     customDictionary: settings.customCorrections,
     ignoredWords: settings.ignoredWords,
   };
+}
+
+function isCompletionKey(event) {
+  return COMPLETION_KEYS.has(event.key) && !hasCommandModifier(event);
+}
+
+function hasCommandModifier(event) {
+  return event.altKey || event.ctrlKey || event.metaKey;
 }
 
 function isCollapsed(selection) {

@@ -43,29 +43,55 @@ async function refreshRuntime(runtimePromise) {
 }
 
 async function createRuntime() {
-  const [
-    { createCorrectionHandler },
-    { loadCorrectionState },
-    { createSuggestionManager },
-  ] = await loadModules();
+  const [correction, { loadCorrectionState }, { createSuggestionManager }] =
+    await loadModules();
   const state = createStateLoader(loadCorrectionState);
-  return runtimeFor(createCorrectionHandler, createSuggestionManager, state);
+  return runtimeFor(correction, createSuggestionManager, state);
 }
 
 function createStateLoader(loadCorrectionState) {
-  let promise = loadCorrectionState();
+  let current = null;
+  const store = (state) => storeCurrent(state, (value) => (current = value));
+  let promise = loadCorrectionState().then(store);
   return {
     get: () => promise,
-    refresh: () => (promise = loadCorrectionState()),
+    getCurrent: () => current,
+    refresh: () => (promise = loadCorrectionState().then(store)),
   };
 }
 
-function runtimeFor(createCorrectionHandler, createSuggestionManager, state) {
+function storeCurrent(state, setCurrent) {
+  setCurrent(state);
+  return state;
+}
+
+function runtimeFor(correction, createSuggestionManager, state) {
   const suggestions = createSuggestionManager();
+  const options = correctionOptions(state, suggestions);
+  return runtimeHandlers(correction, suggestions, options, state.refresh);
+}
+
+function runtimeHandlers(correction, suggestions, options, refresh) {
+  const correctionKeydown = correction.createCorrectionKeydownHandler(options);
   return {
-    handler: createCorrectionHandler({ getState: state.get, suggestions }),
-    keydown: suggestions.handleKeydown,
-    refresh: state.refresh,
+    handler: correction.createCorrectionHandler(options),
+    keydown: keydownHandler(suggestions.handleKeydown, correctionKeydown),
+    refresh,
+  };
+}
+
+function correctionOptions(state, suggestions) {
+  return {
+    getCurrentState: state.getCurrent,
+    getState: state.get,
+    suggestions,
+  };
+}
+
+function keydownHandler(suggestionsKeydown, correctionKeydown) {
+  return (event) => {
+    suggestionsKeydown(event);
+    correctionKeydown(event);
   };
 }
 

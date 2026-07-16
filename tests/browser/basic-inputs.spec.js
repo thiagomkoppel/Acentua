@@ -38,6 +38,45 @@ test("corrects a basic contenteditable word", async ({ page }) => {
   await expect(editor).toHaveText("Eu tamb\u00e9m ");
 });
 
+test("corrects a shadow DOM contenteditable word", async ({ page }) => {
+  await openFixture(page);
+  await createShadowEditor(page);
+
+  const editor = page.locator("#shadow-editor");
+
+  await editor.focus();
+  await editor.pressSequentially("Eu tambem ");
+
+  await expect(editor).toHaveText("Eu tamb\u00e9m ");
+});
+
+test("corrects a textarea word before Tab changes focus", async ({ page }) => {
+  await openFixture(page);
+
+  const notes = page.locator("#notes");
+
+  await notes.pressSequentially("servico");
+  await page.keyboard.press("Tab");
+
+  await expect(notes).toHaveValue("servi\u00e7o");
+  await expect(page.locator("#editor")).toBeFocused();
+});
+
+test("corrects a contenteditable word before Tab changes focus", async ({
+  page,
+}) => {
+  await openFixture(page);
+
+  const editor = page.locator("#editor");
+
+  await editor.focus();
+  await editor.pressSequentially("servico");
+  await page.keyboard.press("Tab");
+
+  await expect(editor).toHaveText("servi\u00e7o");
+  await expect(page.locator("#password")).toBeFocused();
+});
+
 test("shows and accepts an ambiguous suggestion by click", async ({ page }) => {
   await openFixture(page);
 
@@ -87,6 +126,21 @@ test("accepts an ambiguous suggestion by keyboard", async ({ page }) => {
   await expect(notes).toHaveValue("est\u00e1 ");
 });
 
+test("accepts an ambiguous suggestion with a custom shortcut", async ({
+  page,
+}) => {
+  await openFixture(page, customShortcuts());
+
+  const notes = page.locator("#notes");
+
+  await notes.pressSequentially("esta ");
+  await pressCommandKey(page, ".");
+  await expect(notes).toHaveValue("esta ");
+  await pressCommandKey(page, "]");
+
+  await expect(notes).toHaveValue("est\u00e1 ");
+});
+
 test("does not show ambiguous suggestions when disabled", async ({ page }) => {
   await openFixture(page, { showAmbiguousSuggestions: false });
 
@@ -105,6 +159,20 @@ test("dismisses an ambiguous suggestion by keyboard", async ({ page }) => {
 
   await notes.pressSequentially("esta ");
   await page.keyboard.press("Control+Comma");
+
+  await expect(notes).toHaveValue("esta ");
+  await expect(suggestionPopover(page)).toHaveCount(0);
+});
+
+test("dismisses an ambiguous suggestion with a custom shortcut", async ({
+  page,
+}) => {
+  await openFixture(page, customShortcuts());
+
+  const notes = page.locator("#notes");
+
+  await notes.pressSequentially("esta ");
+  await pressCommandKey(page, "[");
 
   await expect(notes).toHaveValue("esta ");
   await expect(suggestionPopover(page)).toHaveCount(0);
@@ -133,6 +201,19 @@ test("lets Escape pass through to the page", async ({ page }) => {
   await expect.poll(() => escapeCount(page)).toBe(1);
 });
 
+async function createShadowEditor(page) {
+  await page.evaluate(() => {
+    const host = document.createElement("youtube-live-chat-like");
+    const shadow = host.attachShadow({ mode: "open" });
+    const editor = document.createElement("div");
+    editor.id = "shadow-editor";
+    editor.contentEditable = "true";
+    editor.tabIndex = 0;
+    shadow.append(editor);
+    document.body.append(host);
+  });
+}
+
 async function openFixture(page, settings = {}) {
   await page.goto(`${baseUrl}/fixture/basic-inputs.html`);
   await installAcentua(page, settings);
@@ -149,12 +230,14 @@ function scriptContent(settings) {
     Promise.all([
       import("${baseUrl}/src/content/correction-controller.js"),
       import("${baseUrl}/src/content/ambiguous-suggestions.js")
-    ]).then(([{ createCorrectionHandler }, { createSuggestionManager }]) => {
+    ]).then(([{ createCorrectionHandler, createCorrectionKeydownHandler }, { createSuggestionManager }]) => {
       const state = ${JSON.stringify(testState(settings))};
       const getState = () => Promise.resolve(state);
       const suggestions = createSuggestionManager();
-      document.addEventListener("input", createCorrectionHandler({ getState, suggestions }), true);
+      const options = { getCurrentState: () => state, getState, suggestions };
+      document.addEventListener("input", createCorrectionHandler(options), true);
       document.addEventListener("keydown", suggestions.handleKeydown, true);
+      document.addEventListener("keydown", createCorrectionKeydownHandler(options), true);
       window.__acentuaReady = true;
     });
   `;
@@ -163,12 +246,13 @@ function scriptContent(settings) {
 function testState(settings = {}) {
   return {
     ambiguousDictionary: { esta: ["esta", "est\u00e1"] },
-    safeDictionary: { tambem: "tamb\u00e9m" },
+    safeDictionary: { servico: "servi\u00e7o", tambem: "tamb\u00e9m" },
     settings: {
       customCorrections: {},
       disabledDomains: [],
       enabled: true,
       ignoredWords: [],
+      shortcutKeys: settings.shortcutKeys ?? defaultShortcuts(),
       showAmbiguousSuggestions: settings.showAmbiguousSuggestions ?? true,
     },
   };
@@ -208,6 +292,20 @@ async function suggestionPlacement(page) {
       popoverBottom: chip.getBoundingClientRect().bottom,
     };
   });
+}
+
+function customShortcuts() {
+  return { shortcutKeys: { acceptSuggestion: "]", dismissSuggestion: "[" } };
+}
+
+function defaultShortcuts() {
+  return { acceptSuggestion: ".", dismissSuggestion: "," };
+}
+
+async function pressCommandKey(page, key) {
+  await page.keyboard.down("Control");
+  await page.keyboard.press(key);
+  await page.keyboard.up("Control");
 }
 
 async function trackEscape(page) {

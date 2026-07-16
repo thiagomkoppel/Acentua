@@ -71,7 +71,7 @@ The controller coordinates:
 
 ### Ambiguous suggestion manager
 
-`src/content/ambiguous-suggestions.js` owns the local suggestion popover state. It renders a lightweight chip, accepts the first suggestion by click or `Ctrl+.` / `Cmd+.`, dismisses by button or `Ctrl+,` / `Cmd+,`, and lets `Escape` pass through to the page.
+`src/content/ambiguous-suggestions.js` owns the local suggestion popover state. It renders a lightweight chip, accepts the first suggestion by click or the configured accept shortcut, dismisses by button or the configured dismiss shortcut, and lets `Escape` pass through to the page. The defaults are `Ctrl+.` / `Cmd+.` to accept and `Ctrl+,` / `Cmd+,` to dismiss.
 
 ## 4. Editor adapters
 
@@ -243,7 +243,11 @@ Suggested settings shape:
   ignoredWords: [],
   showCorrectionIndicator: true,
   preserveCapitalization: true,
-  showAmbiguousSuggestions: true
+  showAmbiguousSuggestions: true,
+  shortcutKeys: {
+    acceptSuggestion: ".",
+    dismissSuggestion: ","
+  }
 }
 ```
 

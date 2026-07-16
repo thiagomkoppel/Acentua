@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { getCompletedToken } from "../../src/correction/tokenizer.js";
+import {
+  getCompletedToken,
+  getTokenBeforeCursor,
+} from "../../src/correction/tokenizer.js";
 
 describe("getCompletedToken", () => {
   it("finds a word before a space", () => {
@@ -21,6 +24,18 @@ describe("getCompletedToken", () => {
 
   it("returns null for repeated spaces", () => {
     expect(getCompletedToken("tambem  ", 8)).toBeNull();
+  });
+  it("finds a pending word before a completion key", () => {
+    expect(getTokenBeforeCursor("servico", 7, "Tab")).toMatchObject({
+      delimiter: "Tab",
+      end: 7,
+      start: 0,
+      word: "servico",
+    });
+  });
+
+  it("returns null when pending cursor is after whitespace", () => {
+    expect(getTokenBeforeCursor("servico ", 8, "Tab")).toBeNull();
   });
 
   it("does not split hyphenated words", () => {

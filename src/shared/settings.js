@@ -1,15 +1,25 @@
+export const DEFAULT_SHORTCUT_KEYS = Object.freeze({
+  acceptSuggestion: ".",
+  dismissSuggestion: ",",
+});
+
 export const DEFAULT_SETTINGS = Object.freeze({
   customCorrections: {},
   disabledDomains: [],
   enabled: true,
   ignoredWords: [],
   locale: "pt-BR",
+  shortcutKeys: DEFAULT_SHORTCUT_KEYS,
   showAmbiguousSuggestions: true,
 });
 
 export function mergeSettings(value = {}) {
   const source = isPlainObject(value) ? value : {};
-  return { ...dictionarySettings(source), ...featureSettings(source) };
+  return {
+    ...dictionarySettings(source),
+    ...featureSettings(source),
+    ...shortcutSettings(source),
+  };
 }
 
 export async function readSettings(storage = defaultStorage()) {
@@ -42,6 +52,15 @@ export function cleanWordList(value) {
   return value.map(cleanWord).filter(Boolean);
 }
 
+export function parseShortcutKey(value, fallback = "") {
+  const token = shortcutToken(value);
+  return isShortcutKey(token) ? token : fallback;
+}
+
+export function shortcutLabel(key) {
+  return `Ctrl+${key}`;
+}
+
 function dictionarySettings(source) {
   return {
     customCorrections: cleanDictionary(source.customCorrections),
@@ -56,6 +75,38 @@ function featureSettings(source) {
     locale: "pt-BR",
     showAmbiguousSuggestions: source.showAmbiguousSuggestions !== false,
   };
+}
+
+function shortcutSettings(source) {
+  return { shortcutKeys: cleanShortcutKeys(source.shortcutKeys) };
+}
+
+function cleanShortcutKeys(value = {}) {
+  const source = isPlainObject(value) ? value : {};
+  const accept = cleanShortcutKey(source.acceptSuggestion, ".");
+  return {
+    acceptSuggestion: accept,
+    dismissSuggestion: cleanDismissShortcut(source.dismissSuggestion, accept),
+  };
+}
+
+function cleanDismissShortcut(value, accept) {
+  const key = cleanShortcutKey(value, ",");
+  return key === accept ? DEFAULT_SHORTCUT_KEYS.dismissSuggestion : key;
+}
+
+function cleanShortcutKey(value, fallback) {
+  return parseShortcutKey(value, fallback);
+}
+
+function shortcutToken(value) {
+  if (typeof value !== "string") return "";
+  const parts = value.trim().split("+");
+  return parts.at(-1)?.trim() ?? "";
+}
+
+function isShortcutKey(key) {
+  return key.length === 1 && !/\s/u.test(key);
 }
 
 function cleanDomains(value) {

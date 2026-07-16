@@ -20,8 +20,8 @@ describe("packaged dictionaries", () => {
     });
   });
 
-  it("contains the expanded safe vocabulary", () => {
-    expect(Object.keys(safeDictionary)).toHaveLength(326);
+  it("contains at least the baseline expanded safe vocabulary", () => {
+    expect(Object.keys(safeDictionary).length).toBeGreaterThanOrEqual(326);
   });
 
   it.each([

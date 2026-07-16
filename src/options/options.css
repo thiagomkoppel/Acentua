@@ -32,12 +32,16 @@ form {
   gap: 18px;
 }
 
+input[type="text"],
 textarea {
   border: 1px solid #b9c1cc;
   border-radius: 6px;
   font: inherit;
-  min-height: 92px;
   padding: 10px;
+}
+
+textarea {
+  min-height: 92px;
 }
 
 button {

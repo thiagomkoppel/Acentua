@@ -16,19 +16,27 @@ const JOINING_PREFIXES = new Set(["-", "'", "’"]);
 
 export function getCompletedToken(text, cursor = text.length) {
   if (!isCompletedPosition(text, cursor)) return null;
-  return tokenAt(text, cursor);
+  return tokenBefore(text, cursor - 1, text[cursor - 1]);
 }
 
-function tokenAt(text, cursor) {
-  const end = cursor - 1;
+export function getTokenBeforeCursor(
+  text,
+  cursor = text.length,
+  delimiter = "",
+) {
+  if (!isPendingPosition(text, cursor)) return null;
+  return tokenBefore(text, cursor, delimiter);
+}
+
+function tokenBefore(text, end, delimiter) {
   const start = findWordStart(text, end);
   if (!isSafeWord(text, start, end)) return null;
-  return token(text, start, end, cursor);
+  return token(text, start, end, delimiter);
 }
 
-function token(text, start, end, cursor) {
+function token(text, start, end, delimiter) {
   return {
-    delimiter: text[cursor - 1],
+    delimiter,
     end,
     start,
     word: text.slice(start, end),
@@ -39,6 +47,10 @@ function isCompletedPosition(text, cursor) {
   return (
     canReadToken(text, cursor) && COMPLETION_DELIMITERS.has(text[cursor - 1])
   );
+}
+
+function isPendingPosition(text, cursor) {
+  return canReadToken(text, cursor) && isWordChar(text[cursor - 1]);
 }
 
 function canReadToken(text, cursor) {
