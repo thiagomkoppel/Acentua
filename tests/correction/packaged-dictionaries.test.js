@@ -21,7 +21,7 @@ describe("packaged dictionaries", () => {
   });
 
   it("contains at least the baseline expanded safe vocabulary", () => {
-    expect(Object.keys(safeDictionary).length).toBeGreaterThanOrEqual(326);
+    expect(Object.keys(safeDictionary).length).toBeGreaterThanOrEqual(4000);
   });
 
   it.each([

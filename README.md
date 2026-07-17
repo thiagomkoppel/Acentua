@@ -18,8 +18,8 @@ Implemented in this scaffold:
 
 - Manifest V3 Chrome extension.
 - Pure correction engine with structured results.
-- Expanded sorted Brazilian Portuguese safe dictionary with 326 entries.
-- Separate ambiguous dictionary that blocks automatic replacement and offers local single-option or multi-option suggestions.
+- Expanded sorted Brazilian Portuguese safe dictionary with 4,055 high-confidence entries.
+- Separate ambiguous dictionary with 132 entries that blocks automatic replacement and offers local single-option or multi-option suggestions.
 - Dictionary validation tooling for sorted entries, conflicts, normalization, and unsafe keys.
 - Standard `input[type=text]`, `input[type=search]`, and `textarea` adapter.
 - Basic `contenteditable` adapter for simple rich text fields.
