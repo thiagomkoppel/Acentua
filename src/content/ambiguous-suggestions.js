@@ -55,30 +55,36 @@ function createPopover(suggestion, setState) {
   popover.setAttribute(SUGGESTION_ATTR, "");
   stylePopover(popover);
   popover.append(
-    createButton(suggestion, setState),
+    ...createOptionButtons(suggestion, setState),
     createDismissButton(setState),
   );
   return popover;
 }
 
-function createButton(suggestion, setState) {
+function createOptionButtons(suggestion, setState) {
+  return suggestion.options.map((option) =>
+    createButton(option, suggestion, setState),
+  );
+}
+
+function createButton(option, suggestion, setState) {
   const button = document.createElement("button");
-  configureButton(button, suggestion);
-  bindButtonEvents(button, suggestion, setState);
+  configureButton(button, option);
+  bindButtonEvents(button, option, suggestion, setState);
   return button;
 }
 
-function configureButton(button, suggestion) {
+function configureButton(button, option) {
   button.type = "button";
-  button.textContent = `${suggestion.options[0]}?`;
-  button.setAttribute("aria-label", `Use ${suggestion.options[0]}`);
+  button.textContent = `${option}?`;
+  button.setAttribute("aria-label", `Use ${option}`);
   styleActionButton(button);
 }
 
-function bindButtonEvents(button, suggestion, setState) {
+function bindButtonEvents(button, option, suggestion, setState) {
   button.addEventListener("mousedown", preventFocusLoss);
   button.addEventListener("click", () =>
-    setState(accept(suggestion, nearestPopover(button))),
+    setState(accept(suggestion, nearestPopover(button), option)),
   );
 }
 
@@ -104,19 +110,22 @@ function bindDismissButton(button, setState) {
   );
 }
 
-function accept(suggestion, popover) {
-  replaceSuggestion(suggestion);
+function accept(suggestion, popover, option = firstOption(suggestion)) {
+  replaceSuggestion(suggestion, option);
   return dismiss(popover);
 }
 
-function replaceSuggestion(suggestion) {
-  const replacement = replacementFor(suggestion);
+function firstOption(suggestion) {
+  return suggestion.options[0];
+}
+
+function replaceSuggestion(suggestion, corrected) {
+  const replacement = replacementFor(suggestion, corrected);
   suggestion.context.adapter.replaceRange(...replacement);
 }
 
-function replacementFor(suggestion) {
+function replacementFor(suggestion, corrected) {
   const { context, token } = suggestion;
-  const corrected = suggestion.options[0];
   const cursor = nextCursor(context.selection, token, corrected);
   return [context.element, token.start, token.end, corrected, cursor];
 }

@@ -12,7 +12,7 @@
 body {
   color: #1c2430;
   margin: 0;
-  min-width: 220px;
+  min-width: 240px;
 }
 
 main {
@@ -26,14 +26,49 @@ p {
   margin: 0;
 }
 
+.mode-card {
+  border: 1px solid #d7dde2;
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.label {
+  color: #51606b;
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
 button {
-  background: #0e5a8a;
   border: 0;
   border-radius: 6px;
-  color: white;
   cursor: pointer;
   font: inherit;
+  font-weight: 700;
   padding: 8px 12px;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.toggle[aria-pressed="true"] {
+  background: #147d52;
+  color: white;
+}
+
+.toggle[aria-pressed="false"] {
+  background: #6b7280;
+  color: white;
+}
+
+.secondary {
+  background: white;
+  border: 1px solid #b9c4cc;
+  color: #0e5a8a;
 }
 
 button:focus-visible {

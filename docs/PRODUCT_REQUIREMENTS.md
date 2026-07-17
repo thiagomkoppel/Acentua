@@ -38,6 +38,10 @@ As a user, I want `Voce` to become `Você` and `VOCE` to become `VOCÊ`.
 
 As a user, I want `Ctrl+Z` or `Cmd+Z` to restore the text when a correction is not desired.
 
+### Quick pause
+
+As a user, I want to turn Portuguese mode on or off from the popup when I am writing in another language.
+
 ### Per-site control
 
 As a user, I want to disable correction on a website without disabling the extension everywhere.
@@ -52,7 +56,7 @@ As a user, I want to prevent a particular word from being changed.
 
 ### Ambiguous suggestions
 
-As a user, I want ambiguous words to stay unchanged unless I explicitly accept a suggested accent.
+As a user, I want ambiguous words to stay unchanged unless I explicitly accept one of the suggested accents.
 
 ### Privacy
 
@@ -106,7 +110,7 @@ The MVP must support:
 
 The user must be able to:
 
-- Enable or disable the extension globally.
+- Enable or disable the extension globally from the popup or options page.
 - Disable or enable the current website.
 
 ### FR-8: User dictionary
@@ -189,4 +193,4 @@ The MVP is accepted when all of these scenarios pass:
 8. Password fields remain untouched.
 9. Disabled websites remain untouched.
 10. The extension works without internet access.
-11. Ambiguous suggestions can be accepted or dismissed without changing text automatically.
+11. Ambiguous suggestions, including multi-option suggestions, can be accepted or dismissed without changing text automatically.

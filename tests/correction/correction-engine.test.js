@@ -39,6 +39,15 @@ describe("correctWord", () => {
     ]);
   });
 
+  it("returns every accented ambiguous suggestion", () => {
+    const result = correctWord("avo", {
+      ...dictionaries,
+      ambiguousDictionary: { avo: ["avo", "av\u00f3", "av\u00f4"] },
+    });
+
+    expect(result.suggestions).toEqual(["av\u00f3", "av\u00f4"]);
+  });
+
   it("preserves capitalization through the engine", () => {
     expect(correctWord("VOCE", dictionaries).corrected).toBe("VOC\u00ca");
   });

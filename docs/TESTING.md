@@ -140,9 +140,13 @@ Add `tambem` to ignored words and verify it remains unchanged.
 
 Add a custom pair and verify it is used.
 
+### Popup PT mode
+
+Verify the popup renders the current PT mode state, toggles the global enabled setting, and keeps the options link keyboard-accessible.
+
 ### Ambiguous suggestions
 
-Verify suggestion display, light-chip styling, placement, click accept, default and custom keyboard accept, setting disable, default and custom keyboard dismiss, dismiss-button behavior, and Escape pass-through.
+Verify suggestion display, multi-option rendering, light-chip styling, placement, click accept for each option, default and custom keyboard accept, setting disable, default and custom keyboard dismiss, dismiss-button behavior, and Escape pass-through.
 
 ### Basic contenteditable
 

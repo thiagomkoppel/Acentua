@@ -71,7 +71,7 @@ The controller coordinates:
 
 ### Ambiguous suggestion manager
 
-`src/content/ambiguous-suggestions.js` owns the local suggestion popover state. It renders a lightweight chip, accepts the first suggestion by click or the configured accept shortcut, dismisses by button or the configured dismiss shortcut, and lets `Escape` pass through to the page. The defaults are `Ctrl+.` / `Cmd+.` to accept and `Ctrl+,` / `Cmd+,` to dismiss.
+`src/content/ambiguous-suggestions.js` owns the local suggestion popover state. It renders a lightweight chip with one button per suggestion option, accepts a clicked option, accepts the first option with the configured accept shortcut, dismisses by button or the configured dismiss shortcut, and lets `Escape` pass through to the page. The defaults are `Ctrl+.` / `Cmd+.` to accept and `Ctrl+,` / `Cmd+,` to dismiss.
 
 ## 4. Editor adapters
 
@@ -210,7 +210,7 @@ Do not move typing analysis to the service worker. Content scripts need immediat
 
 The popup should display:
 
-- Extension enabled state.
+- Quick PT mode toggle backed by the global enabled state.
 - Current website enabled state.
 - Correction mode.
 - Last correction.

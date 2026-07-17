@@ -9,8 +9,20 @@
   <body>
     <main>
       <h1>Acentua</h1>
-      <p id="state">Loading...</p>
-      <button id="options" type="button">Options</button>
+      <section class="mode-card" aria-labelledby="mode-title">
+        <p id="mode-title" class="label">Portuguese mode</p>
+        <button
+          id="toggle-enabled"
+          class="toggle"
+          type="button"
+          aria-pressed="false"
+          disabled
+        >
+          Loading...
+        </button>
+        <p id="state" role="status">Loading...</p>
+      </section>
+      <button id="options" class="secondary" type="button">Options</button>
     </main>
     <script type="module" src="popup.js"></script>
   </body>

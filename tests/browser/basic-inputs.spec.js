@@ -89,6 +89,20 @@ test("shows and accepts an ambiguous suggestion by click", async ({ page }) => {
   await expect(notes).toHaveValue("est\u00e1 ");
 });
 
+test("shows and accepts multiple ambiguous options by click", async ({
+  page,
+}) => {
+  await openFixture(page);
+
+  const notes = page.locator("#notes");
+
+  await notes.pressSequentially("avo ");
+  await expect(suggestionButton(page)).toHaveText(["av\u00f3?", "av\u00f4?"]);
+  await suggestionButton(page).nth(1).click();
+
+  await expect(notes).toHaveValue("av\u00f4 ");
+});
+
 test("renders ambiguous suggestions as a light chip", async ({ page }) => {
   await openFixture(page);
 
@@ -245,7 +259,10 @@ function scriptContent(settings) {
 
 function testState(settings = {}) {
   return {
-    ambiguousDictionary: { esta: ["esta", "est\u00e1"] },
+    ambiguousDictionary: {
+      avo: ["avo", "av\u00f3", "av\u00f4"],
+      esta: ["esta", "est\u00e1"],
+    },
     safeDictionary: { servico: "servi\u00e7o", tambem: "tamb\u00e9m" },
     settings: {
       customCorrections: {},

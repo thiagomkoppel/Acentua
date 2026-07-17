@@ -19,7 +19,7 @@ Implemented in this scaffold:
 - Manifest V3 Chrome extension.
 - Pure correction engine with structured results.
 - Expanded sorted Brazilian Portuguese safe dictionary with 326 entries.
-- Separate ambiguous dictionary that blocks automatic replacement and offers local suggestions.
+- Separate ambiguous dictionary that blocks automatic replacement and offers local single-option or multi-option suggestions.
 - Dictionary validation tooling for sorted entries, conflicts, normalization, and unsafe keys.
 - Standard `input[type=text]`, `input[type=search]`, and `textarea` adapter.
 - Basic `contenteditable` adapter for simple rich text fields.
@@ -28,7 +28,7 @@ Implemented in this scaffold:
 - Cursor preservation after replacement.
 - Sensitive-field and code-context exclusions.
 - Global enable setting, disabled domains, ignored words, and custom corrections in `chrome.storage`.
-- Minimal popup and options page, including an ambiguous-suggestion toggle and shortcut settings.
+- Minimal popup with a quick PT mode toggle, plus an options page for ambiguous suggestions and shortcut settings.
 - Extension icons generated from `src/assets/logo.png`.
 - Unit tests plus Chromium browser integration tests.
 
@@ -180,12 +180,16 @@ After rebuilding, click **Reload** on the extension in `chrome://extensions` and
 
 For quick development, you can also load the project root directly because `manifest.json` is at the root. Use `dist/` for cleaner release-style testing.
 
+## Popup PT Mode
+
+Click the Acentua toolbar icon to turn PT mode on or off quickly. Turning PT mode off pauses corrections everywhere, which is useful when writing in another language. The same global enabled setting is also available in Options.
+
 ## Ambiguous Suggestions
 
 Ambiguous words such as `esta` are not corrected automatically. When suggestions are enabled, Acentua shows a small local popover near the active field. The popover is local-only, non-modal, and does not send typed text anywhere.
 
-- Click the suggestion to accept it.
-- Press `Ctrl+.` or `Cmd+.` to accept it from the keyboard by default.
+- Click a suggestion option to accept it. Multi-option words such as `avo` can show both `avó` and `avô`.
+- Press `Ctrl+.` or `Cmd+.` to accept the first suggestion from the keyboard by default.
 - Press `Ctrl+,` or `Cmd+,` to dismiss it from the keyboard by default.
 - Click the small dismiss button to close it with the mouse.
 - Change the accept and dismiss shortcuts in Options if you prefer another `Ctrl` or `Cmd` key, such as `Ctrl+]` and `Ctrl+[`.
@@ -194,7 +198,7 @@ Ambiguous words such as `esta` are not corrected automatically. When suggestions
 
 The options page supports:
 
-- Global enable or disable.
+- Global enable or disable, also available as PT mode in the popup.
 - Disabled domains, one per line, such as `example.com`.
 - Ignored words, one per line.
 - Ambiguous word suggestions on or off.
