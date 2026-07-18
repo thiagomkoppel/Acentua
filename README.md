@@ -12,13 +12,15 @@ Examples:
 
 The first version runs entirely in the browser. It does not send typed text to a server, use analytics, or store full sentences.
 
+Install Acentua from the [Chrome Web Store](https://chromewebstore.google.com/detail/efijbmalniablofmklkgemdjefpcfkbf).
+
 ## First Version Scope
 
 Implemented in this scaffold:
 
 - Manifest V3 Chrome extension.
 - Pure correction engine with structured results.
-- Expanded sorted Brazilian Portuguese safe dictionary with 4,055 high-confidence entries.
+- Expanded sorted Brazilian Portuguese safe dictionary with 4,056 high-confidence entries.
 - Separate ambiguous dictionary with 132 entries that blocks automatic replacement and offers local single-option or multi-option suggestions.
 - Dictionary validation tooling for sorted entries, conflicts, normalization, and unsafe keys.
 - Standard `input[type=text]`, `input[type=search]`, and `textarea` adapter.
@@ -164,7 +166,7 @@ npm run build
 
 The build output is written to `dist/`.
 
-For release packaging, zip the contents of `dist/` so `manifest.json` is at the archive root. The current local package path is `releases/acentua-0.1.0.zip`.
+For release packaging, zip the contents of `dist/` so `manifest.json` is at the archive root. The current local package path is `releases/acentua-0.1.1.zip`.
 
 ## Load In Chrome
 

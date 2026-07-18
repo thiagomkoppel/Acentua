@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Acentua",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Restores high-confidence Brazilian Portuguese accents locally while you type.",
   "permissions": ["storage"],
   "icons": {

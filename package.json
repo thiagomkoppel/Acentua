@@ -1,6 +1,6 @@
 {
   "name": "acentua",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Privacy-focused Chrome extension for restoring high-confidence Brazilian Portuguese accents.",
   "type": "module",
   "private": true,

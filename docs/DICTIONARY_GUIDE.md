@@ -45,7 +45,7 @@ User-specific ignored words belong in `chrome.storage`.
 
 ## Current packaged dictionaries
 
-This version ships with 4,055 sorted safe entries and 132 ambiguous entries. The dictionary is still intentionally conservative: additions must remain high-confidence, local, and test-backed.
+This version ships with 4,056 sorted safe entries and 132 ambiguous entries. The dictionary is still intentionally conservative: additions must remain high-confidence, local, and test-backed.
 
 ## Entry rules
 
