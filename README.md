@@ -238,4 +238,4 @@ A local static website page is available at `website/acentua/index.html` for tes
 
 ## License
 
-Choose a license before publishing. MIT is appropriate for a permissive open-source release.
+Mozilla Public License Version 2.0
